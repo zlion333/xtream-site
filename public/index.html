@@ -1,0 +1,24 @@
+<h2>Login Xtream</h2>
+<input id="server" placeholder="http://servidor:80"><br><br>
+<input id="user" placeholder="Usuário"><br><br>
+<input id="pass" placeholder="Senha" type="password"><br><br>
+<button onclick="loadTV()">Carregar TV</button>
+<ul id="lista"></ul>
+
+<script>
+async function loadTV() {
+  const server = server.value;
+  const user = user.value;
+  const pass = pass.value;
+
+  const res = await fetch(`/api?server=${server}&user=${user}&pass=${pass}&action=get_live_streams`);
+  const data = await res.json();
+
+  lista.innerHTML = '';
+  data.forEach(c => {
+    const li = document.createElement('li');
+    li.innerText = c.name;
+    lista.appendChild(li);
+  });
+}
+</script>
