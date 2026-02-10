@@ -14,21 +14,39 @@
 
 <script>
 async function loadTV() {
-  const server = document.getElementById('server').value;
-  const user = document.getElementById('user').value;
-  const pass = document.getElementById('pass').value;
+  try {
+    const server = document.getElementById('server').value;
+    const user = document.getElementById('user').value;
+    const pass = document.getElementById('pass').value;
 
-  const res = await fetch(`/api?server=${server}&user=${user}&pass=${pass}&action=get_live_streams`);
-  const data = await res.json();
+    const res = await fetch(`/api?server=${server}&user=${user}&pass=${pass}&action=get_live_streams`);
 
-  const lista = document.getElementById('lista');
-  lista.innerHTML = '';
+    if (!res.ok) {
+      alert('Erro ao conectar ao servidor Xtream');
+      return;
+    }
 
-  data.forEach(c => {
-    const li = document.createElement('li');
-    li.innerText = c.name;
-    lista.appendChild(li);
-  });
+    const text = await res.text();
+
+    if (!text) {
+      alert('Resposta vazia do servidor. Pode estar bloqueando acesso externo.');
+      return;
+    }
+
+    const data = JSON.parse(text);
+
+    const lista = document.getElementById('lista');
+    lista.innerHTML = '';
+
+    data.forEach(c => {
+      const li = document.createElement('li');
+      li.innerText = c.name;
+      lista.appendChild(li);
+    });
+  } catch (e) {
+    alert('Erro ao carregar canais. Verifique servidor, usuário e senha.');
+    console.error(e);
+  }
 }
 </script>
 
